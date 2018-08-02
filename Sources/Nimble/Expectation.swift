@@ -89,16 +89,29 @@ public struct Expectation<T> {
     /// DEPRECATED: Tests the actual value using a matcher to match.
     public func to<U>(_ matcher: U, description: String? = nil)
         where U: Matcher, U.ValueType == T {
-        let (pass, msg) = expressionMatches(expression, matcher: matcher, to: "to", description: description)
-        verify(pass, msg)
+            let (pass, msg) = execute(
+                expression,
+                .toMatch,
+                matcher.predicate,
+                to: "to",
+                description: description,
+                captureExceptions: false
+            )
+            verify(pass, msg)
     }
 
     /// DEPRECATED: Tests the actual value using a matcher to not match.
     public func toNot<U>(_ matcher: U, description: String? = nil)
         where U: Matcher, U.ValueType == T {
-        // swiftlint:disable:next line_length
-        let (pass, msg) = expressionDoesNotMatch(expression, matcher: matcher, toNot: "to not", description: description)
-        verify(pass, msg)
+            let (pass, msg) = execute(
+                expression,
+                .toNotMatch,
+                matcher.predicate,
+                to: "to not",
+                description: description,
+                captureExceptions: false
+            )
+            verify(pass, msg)
     }
 
     /// DEPRECATED: Tests the actual value using a matcher to not match.
