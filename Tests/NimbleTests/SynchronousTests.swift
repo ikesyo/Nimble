@@ -16,6 +16,7 @@ final class SynchronousTest: XCTestCase, XCTestCaseProvider {
             ("testToNotProvidesActualValueExpression", testToNotProvidesActualValueExpression),
             ("testToNotProvidesAMemoizedActualValueExpression", testToNotProvidesAMemoizedActualValueExpression),
             ("testToNotProvidesAMemoizedActualValueExpressionIsEvaluatedAtMatcherControl", testToNotProvidesAMemoizedActualValueExpressionIsEvaluatedAtMatcherControl),
+            ("testToNegativeMatches", testToNegativeMatches),
             ("testToNotNegativeMatches", testToNotNegativeMatches),
             ("testNotToMatchesLikeToNot", testNotToMatchesLikeToNot),
         ]
@@ -48,6 +49,7 @@ final class SynchronousTest: XCTestCase, XCTestCaseProvider {
 
     func testToMatchesIfMatcherReturnsTrue() {
         expect(1).to(MatcherFunc { _, _ in true })
+        expect(1).to(MatcherFunc { _, _ in true }.predicate)
         expect {1}.to(MatcherFunc { _, _ in true })
     }
 
@@ -87,6 +89,7 @@ final class SynchronousTest: XCTestCase, XCTestCaseProvider {
     // repeated tests from to() for toNot()
     func testToNotMatchesIfMatcherReturnsTrue() {
         expect(1).toNot(MatcherFunc { _, _ in false })
+        expect(1).toNot(MatcherFunc { _, _ in false }.predicate)
         expect {1}.toNot(MatcherFunc { _, _ in false })
     }
 
@@ -116,9 +119,23 @@ final class SynchronousTest: XCTestCase, XCTestCaseProvider {
         expect(callCount).to(equal(1))
     }
 
+    func testToNegativeMatches() {
+        let message = "expected to match, got <1>"
+        failsWithErrorMessage(message) {
+            expect(1).to(Predicate.simple("match") { _ in .doesNotMatch })
+        }
+        failsWithErrorMessage(message) {
+            expect(1).to(MatcherFunc { _, _ in false })
+        }
+        failsWithErrorMessage(message) {
+            expect(1).to(MatcherFunc { _, _ in false }.predicate)
+        }
+    }
+
     func testToNotNegativeMatches() {
         failsWithErrorMessage("expected to not match, got <1>") {
             expect(1).toNot(MatcherFunc { _, _ in true })
+            expect(1).toNot(MatcherFunc { _, _ in true }.predicate)
         }
     }
 

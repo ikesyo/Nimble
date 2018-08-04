@@ -153,7 +153,9 @@ public indirect enum ExpectationMessage {
     internal func update(failureMessage: FailureMessage) {
         switch self {
         case let .fail(msg):
-            failureMessage.stringValue = msg
+            if !msg.isEmpty {
+                failureMessage.stringValue = msg
+            }
         case let .expectedTo(msg):
             failureMessage.actualValue = nil
             failureMessage.postfixMessage = msg
@@ -187,7 +189,7 @@ extension FailureMessage {
         }
 
         var msg: ExpectationMessage = .fail(userDescription ?? "")
-        if actualValue != "" && actualValue != nil {
+        if actualValue != defaultMsg.actualValue && actualValue != nil {
             msg = .expectedCustomValueTo(postfixMessage, actualValue ?? "")
         } else if postfixMessage != defaultMsg.postfixMessage {
             if actualValue == nil {
