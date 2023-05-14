@@ -1,0 +1,9 @@
+task:
+  name: Test SwiftPM on Darwin
+  macos_instance:
+    matrix:
+      - image: ghcr.io/cirruslabs/macos-ventura-xcode:14
+      - image: ghcr.io/cirruslabs/macos-ventura-xcode:14.1
+      - image: ghcr.io/cirruslabs/macos-ventura-xcode:14.2
+      - image: ghcr.io/cirruslabs/macos-ventura-xcode:14.3
+  script: ./test swiftpm
